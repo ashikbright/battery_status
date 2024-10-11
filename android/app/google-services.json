@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "941998753950",
+    "project_id": "battery-status-detection",
+    "storage_bucket": "battery-status-detection.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941998753950:android:d184cc68bc51e1bfd2138f",
+        "android_client_info": {
+          "package_name": "com.example.battery_status"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwY0KjwQIIX8Y-nB-GpO-EaRH5ABcjcPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
