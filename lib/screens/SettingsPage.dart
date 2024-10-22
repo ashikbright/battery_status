@@ -2,7 +2,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../main.dart';
+
 class SettingsPage extends StatefulWidget {
+  final BatteryService batteryService;
+
+  SettingsPage({required this.batteryService});
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -33,16 +38,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    int currentLimit = prefs.getInt('batteryLimit') ?? 100;
-    int notificationFrequency = prefs.getInt('notificationFrequency') ?? 60;
-    int snoozeTimes = prefs.getInt('snoozeTimes') ?? 3;
-    String selectedTune = prefs.getString('selectedTune') ?? _audioFiles.first;
-
     setState(() {
-      _limitController = TextEditingController(text: currentLimit.toString());
-      _frequencyController = TextEditingController(text: notificationFrequency.toString());
-      _snoozeController = TextEditingController(text: snoozeTimes.toString());
-      _selectedTune = selectedTune;
+      _limitController.text = (prefs.getInt('batteryLimit') ?? 80).toString();
+      _frequencyController.text = (prefs.getInt('notificationFrequency') ?? 10).toString();
+      _snoozeController.text = (prefs.getInt('snoozeTimes') ?? 3).toString();
+      _selectedTune = prefs.getString('selectedTune') ?? 'assets/alarm.mp3';
     });
   }
 
@@ -63,6 +63,8 @@ class _SettingsPageState extends State<SettingsPage> {
       await prefs.setInt('notificationFrequency', newFrequency);
       await prefs.setInt('snoozeTimes', newSnooze);
       await prefs.setString('selectedTune', _selectedTune);
+
+      widget.batteryService.updateSettings(newLimit, newFrequency, newSnooze, _selectedTune);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Settings Saved")),

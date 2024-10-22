@@ -1,7 +1,7 @@
 import 'package:battery_plus/battery_plus.dart';
-import 'package:battery_status/BatteryService.dart';
-import 'package:battery_status/RealTimeBatteryTracker.dart';
-import 'package:battery_status/SettingsPage.dart';
+import 'package:battery_status/Services/BatteryService.dart';
+import 'package:battery_status/screens/RealTimeBatteryTracker.dart';
+import 'package:battery_status/screens/SettingsPage.dart';
 import 'package:battery_status/main.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +33,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       });
     });
     _tabController = TabController(length: 2, vsync: this);
+    _startBatteryMonitoring();
+  }
+  Future<void> _startBatteryMonitoring() async {
+    await _batteryService.initialize();
   }
 
   @override
@@ -125,7 +129,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 // Battery Saver Tab: Placeholder
                 Center(
-                  child: SettingsPage(),
+                  child: SettingsPage(batteryService: BatteryService(),),
                 ),
               ],
             ),

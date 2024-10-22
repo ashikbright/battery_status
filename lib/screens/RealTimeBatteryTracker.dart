@@ -21,18 +21,17 @@ class _RealTimeBatteryTrackerState extends State<RealTimeBatteryTracker> {
     super.initState();
     _loadBatteryHistory();
 
-    // Fetch battery level every 5 minutes (adjust the duration as needed)
     _timer = Timer.periodic(Duration(minutes: 5), (timer) {
       _getBatteryLevel();
     });
 
-    // Fetch battery level initially to test if data is being fetched
+
     _getBatteryLevel();
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -40,21 +39,21 @@ class _RealTimeBatteryTrackerState extends State<RealTimeBatteryTracker> {
     final batteryLevel = await _battery.batteryLevel;
     final timestamp = DateTime.now().millisecondsSinceEpoch;
 
-    print('Battery level fetched: $batteryLevel%'); // Debugging: Check battery level
+    print('Battery level fetched: $batteryLevel%');
 
-    // Save the battery level along with the timestamp
+
     _batteryHistory.add({'timestamp': timestamp, 'level': batteryLevel});
 
-    // Remove entries older than 24 hours
+
     final twentyFourHoursAgo = DateTime.now().subtract(Duration(hours: 24)).millisecondsSinceEpoch;
     _batteryHistory.removeWhere((entry) => entry['timestamp'] < twentyFourHoursAgo);
 
     print('Battery history: $_batteryHistory'); // Debugging: Check battery history
 
-    // Save the updated battery data
+
     await _saveBatteryHistory();
 
-    // Update the UI
+
     setState(() {});
   }
 
@@ -102,10 +101,9 @@ class _RealTimeBatteryTrackerState extends State<RealTimeBatteryTracker> {
     List<FlSpot> spots = [];
 
     for (var entry in _batteryHistory) {
-      // Calculate hours ago
       double hoursAgo = (DateTime.now().millisecondsSinceEpoch - entry['timestamp']) / (1000 * 3600);
       double level = entry['level'].toDouble();
-      spots.add(FlSpot(24 - hoursAgo, level)); // Display in reverse chronological order
+      spots.add(FlSpot(24 - hoursAgo, level));
     }
 
     return LineChartData(
@@ -115,15 +113,15 @@ class _RealTimeBatteryTrackerState extends State<RealTimeBatteryTracker> {
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 40, // Space reserved for titles
-            interval: 3, // Show labels every 3 hours
+            reservedSize: 40,
+            interval: 3,
             getTitlesWidget: (value, _) {
-              // Only show titles for 0, 3, 6, 9, 12, 15, 18, 21 hours ago
+
               if (value % 3 == 0) {
-                int hoursAgo = (24 - value).toInt(); // Convert to hours ago
-                return Text('${hoursAgo}h'); // Display "h ago"
+                int hoursAgo = (24 - value).toInt();
+                return Text('${hoursAgo}h');
               }
-              return SizedBox.shrink(); // Return an empty widget for other values
+              return SizedBox.shrink();
             },
           ),
         ),
@@ -131,12 +129,12 @@ class _RealTimeBatteryTrackerState extends State<RealTimeBatteryTracker> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 40,
-            interval: 25, // Battery level in intervals of 25
+            interval: 25,
             getTitlesWidget: (value, _) {
               if (value % 25 == 0) {
-                return Text('${value.toInt()}%'); // Show battery percentage
+                return Text('${value.toInt()}%');
               }
-              return SizedBox.shrink(); // Return an empty widget for other values
+              return SizedBox.shrink();
             },
           ),
         ),
@@ -150,10 +148,10 @@ class _RealTimeBatteryTrackerState extends State<RealTimeBatteryTracker> {
           belowBarData: BarAreaData(show: true, color: Colors.blue.withOpacity(0.3)),
         ),
       ],
-      minX: 0, // 0 hours ago (24 hours in the past)
-      maxX: 24, // 24 hours ago (current time)
-      minY: 0,  // Minimum battery level
-      maxY: 100, // Maximum battery level (100%)
+      minX: 0,
+      maxX: 24,
+      minY: 0,
+      maxY: 100,
     );
   }
 
